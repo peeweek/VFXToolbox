@@ -9,13 +9,16 @@ namespace UnityEditor.VFXToolbox.ImageSequencer
         public bool Enabled;
         public ProcessorSettingsBase Settings;
 
-        public static ProcessorInfo CreateDefault(string name, bool enabled, Type type)
+        internal FrameProcessor m_frameProcessor;
+
+        internal static ProcessorInfo CreateDefault(string name, bool enabled, ProcessorSettingsBase settings, FrameProcessorStack processorStack)
         {
-            ProcessorInfo p = ScriptableObject.CreateInstance<ProcessorInfo>();
+            ProcessorInfo p = CreateInstance<ProcessorInfo>();
             p.ProcessorName = name;
             p.Enabled = enabled;
-            p.Settings = ScriptableObject.CreateInstance(type) as ProcessorSettingsBase;
-            p.Settings.Default();
+            p.Settings = Instantiate(settings) as ProcessorSettingsBase;
+            p.m_frameProcessor = new FrameProcessor(settings.shaderPath, processorStack, p);
+            p.Settings.Reset();
             return p;
         }
 
@@ -23,6 +26,37 @@ namespace UnityEditor.VFXToolbox.ImageSequencer
         {
             return ProcessorName + (Enabled ? "" : "Disabled") ;
         }
+
+        public void SetTexture(string name, Texture texture)
+        {
+            m_frameProcessor.material.SetTexture(name, texture);
+        }
+
+        public void SetFloat(string name, float value)
+        {
+            m_frameProcessor.material.SetFloat(name, value);
+        }
+
+        public void SetVector(string name, Vector4 value)
+        {
+            m_frameProcessor.material.SetVector(name, value);
+        }
+
+        public void SetColor(string name, Color value)
+        {
+            m_frameProcessor.material.SetColor(name, value);
+        }
+
+        public void ExecuteShaderAndDump(int outputFrame, Texture mainTex)
+        {
+            m_frameProcessor.ExecuteShaderAndDump(outputFrame, mainTex);
+        }
+
+        public void ExecuteShaderAndDump(int outputFrame, Texture mainTex, Material material)
+        {
+            m_frameProcessor.ExecuteShaderAndDump(outputFrame, mainTex, material);
+        }
+
 
     }
 }

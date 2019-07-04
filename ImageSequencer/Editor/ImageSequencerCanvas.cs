@@ -204,7 +204,9 @@ namespace UnityEditor.VFXToolbox.ImageSequencer
             // Processor extra info
             GUI.BeginGroup(m_Rect);
             if (editor.currentProcessor != null && editor.currentProcessor.Enabled && m_bShowExtraInfo && editor.sidePanelViewMode == ImageSequencer.SidePanelMode.Processors)
-                editor.currentProcessor.OnCanvasGUI(this);
+            {
+                editor.currentProcessor.OnCanvasGUI(GetCanvasInfo(), currentProcessor.GetSequenceInfo());
+            }
             GUI.EndGroup();
 
             // Everytime text
@@ -567,5 +569,19 @@ namespace UnityEditor.VFXToolbox.ImageSequencer
         }
         #endregion
 
+    }
+
+    public struct SequenceInfo
+    {
+        internal ProcessingFrameSequence currentSequence;
+        public int sequenceLength { get { return currentSequence.length; } }
+
+        public Texture RequestFrame(int index)
+        {
+            if (currentSequence.Process(index))
+                return currentSequence.frames[index].texture;
+            else
+                return null;
+        }
     }
 }

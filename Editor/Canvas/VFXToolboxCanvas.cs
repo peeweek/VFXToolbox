@@ -122,12 +122,12 @@ namespace UnityEditor.VFXToolbox
             }
         }
 
-        public Styles styles
+        public CanvasStyles styles
         {
             get
             {
                 if (m_Styles == null)
-                    m_Styles = new Styles(this);
+                    m_Styles = new CanvasStyles(this);
                 return m_Styles;
             }
         }
@@ -152,7 +152,7 @@ namespace UnityEditor.VFXToolbox
         private Vector2 m_ZoomPreviewCenter;
         private Vector2 m_PreviousMousePosition;
 
-        private Styles m_Styles;
+        private CanvasStyles m_Styles;
 
         private Vector2 m_ZoomMinMax = new Vector2(0.2f, 10.0f);
         private bool m_bFilter = true;
@@ -492,7 +492,7 @@ namespace UnityEditor.VFXToolbox
         public void SetBGBrightness(float value)
         {
             m_bgBrightness = value;
-            m_BackgroundTexture = Styles.GetBGTexture(value);
+            m_BackgroundTexture = CanvasStyles.GetBGTexture(value);
         }
 
         public void ResetBrightness()
@@ -515,124 +515,151 @@ namespace UnityEditor.VFXToolbox
 
 #endregion
 
-#region STYLES
 
-
-
-        public class Styles
+        public CanvasInfo GetCanvasInfo()
         {
-            public GUIStyle miniLabel
+            return new CanvasInfo()
             {
-                get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportMiniLabel : m_ViewportMiniLabelDark;  } 
-            }
-
-            public GUIStyle miniLabelRight
-            {
-                get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportMiniLabelRight : m_ViewportMiniLabelRightDark;  } 
-            }
-
-            public GUIStyle miniLabelCenter
-            {
-                get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportMiniLabelCenter : m_ViewportMiniLabelCenterDark;  } 
-            }
-
-            public GUIStyle label
-            {
-                get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportLabel : m_ViewportLabelDark;  } 
-            }
-
-            public GUIStyle largeLabel
-            {
-                get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportLargeLabel : m_ViewportLargeLabelDark;  } 
-            }
-
-            public Color backgroundPanelColor
-            {
-                get { return m_Canvas.BackgroundBrightness < 0.5f ? m_BackgroundPanelColor : m_BackgroundPanelColorDark; }
-            }
-
-            public Color red { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(1, 0, 0, 1) : new Color(0.7f, 0, 0, 1); } }
-            public Color green { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(0, 1, 0, 1) : new Color(0, 0.5f, 0, 1); } }
-            public Color blue { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(0, 0, 1, 1) : new Color(0, 0, 0.5f, 1); } }
-            public Color white { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(1, 1, 1, 1) : new Color(0, 0, 0, 1); } }
-            public Color black { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(0, 0, 0, 1) : new Color(1, 1, 1, 1); } }
-            public Color yellow { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(1.0f, 0.8f, 0.25f) : new Color(0.5f, 0.4f, 0.1f); } }
-            public Color cyan { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(0.25f, 0.8f, 1.0f) : new Color(0.1f, 0.4f, 0.5f); } }
-            public Color fadewhite  { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(1, 1, 1, 0.25f) : new Color(0, 0, 0, 0.25f); } }
-
-            private GUIStyle m_ViewportMiniLabel;
-            private GUIStyle m_ViewportMiniLabelDark;
-            private GUIStyle m_ViewportMiniLabelRight;
-            private GUIStyle m_ViewportMiniLabelRightDark;
-            private GUIStyle m_ViewportMiniLabelCenter;
-            private GUIStyle m_ViewportMiniLabelCenterDark;
-            private GUIStyle m_ViewportLabel;
-            private GUIStyle m_ViewportLabelDark;
-            private GUIStyle m_ViewportLargeLabel;
-            private GUIStyle m_ViewportLargeLabelDark;
-
-            private VFXToolboxCanvas m_Canvas;
-
-            private Color m_BackgroundPanelColor;
-            private Color m_BackgroundPanelColorDark;
-
-            public Styles(VFXToolboxCanvas canvas)
-            {
-                m_Canvas = canvas;
-
-                m_ViewportMiniLabel = new GUIStyle(EditorStyles.miniLabel);
-                m_ViewportMiniLabel.normal.textColor = Color.white;
-                m_ViewportMiniLabelDark = new GUIStyle(EditorStyles.miniLabel);
-                m_ViewportMiniLabelDark.normal.textColor = Color.black;
-
-                m_ViewportMiniLabelRight = new GUIStyle(m_ViewportMiniLabel);
-                m_ViewportMiniLabelRight.alignment = TextAnchor.MiddleRight;
-                m_ViewportMiniLabelRightDark = new GUIStyle(m_ViewportMiniLabelDark);
-                m_ViewportMiniLabelRightDark.alignment = TextAnchor.MiddleRight;
-
-                m_ViewportMiniLabelCenter = new GUIStyle(m_ViewportMiniLabel);
-                m_ViewportMiniLabelCenter.alignment = TextAnchor.MiddleCenter;
-                m_ViewportMiniLabelCenterDark = new GUIStyle(m_ViewportMiniLabelDark);
-                m_ViewportMiniLabelCenterDark.alignment = TextAnchor.MiddleCenter;
-
-                m_ViewportLabel = new GUIStyle(EditorStyles.largeLabel);
-                m_ViewportLabel.normal.textColor = Color.white;
-
-                m_ViewportLabelDark = new GUIStyle(EditorStyles.largeLabel);
-                m_ViewportLabelDark.normal.textColor = Color.black;
-
-                m_ViewportLargeLabel = new GUIStyle(EditorStyles.largeLabel);
-                m_ViewportLargeLabel.fontSize = 24;
-                m_ViewportLargeLabel.normal.textColor = Color.white;
-
-                m_ViewportLargeLabelDark = new GUIStyle(EditorStyles.largeLabel);
-                m_ViewportLargeLabelDark.fontSize = 24;
-                m_ViewportLargeLabelDark.normal.textColor = Color.black;
-
-                m_BackgroundPanelColor = new Color(0.02f, 0.02f, 0.02f, 0.85f);
-                m_BackgroundPanelColorDark = new Color(0.25f, 0.25f, 0.25f, 0.85f);
-
-            }
-
-            public static Texture2D GetBGTexture(float brightness)
-            {
-                Texture2D out_tex = new Texture2D(2, 2) { hideFlags = HideFlags.DontSave };
-                Color[] bgcolors = new Color[4];
-                brightness *= 0.95f;
-                bgcolors[0] = new Color(brightness+0.05f, brightness+0.05f, brightness+0.05f);
-                bgcolors[1] = new Color(brightness, brightness, brightness);
-                bgcolors[2] = new Color(brightness, brightness, brightness);
-                bgcolors[3] = new Color(brightness+0.05f, brightness+0.05f, brightness+0.05f);
-                out_tex.SetPixels(bgcolors);
-                out_tex.wrapMode = TextureWrapMode.Repeat;
-                out_tex.filterMode = FilterMode.Point;
-                out_tex.Apply();
-                return out_tex;
-            }
-
-
+                canvasRect = m_Rect,
+                cameraPosition = m_CameraPosition,
+                zoom = m_Zoom,
+                styles = m_Styles
+            };
         }
-#endregion
 
     }
+
+    public struct CanvasInfo
+    {
+        public Rect canvasRect;
+        public Vector2 cameraPosition;
+        public float zoom;
+        public CanvasStyles styles;
+
+        public Vector2 CanvasToScreen(Vector2 Position)
+        {
+            return new Vector2(
+                (canvasRect.width / 2) - cameraPosition.x - (Position.x * zoom),
+                (canvasRect.height / 2) - cameraPosition.y - (Position.y * zoom)
+                );
+        }
+    }
+
+
+    #region STYLES
+
+    public class CanvasStyles
+    {
+        public GUIStyle miniLabel
+        {
+            get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportMiniLabel : m_ViewportMiniLabelDark; }
+        }
+
+        public GUIStyle miniLabelRight
+        {
+            get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportMiniLabelRight : m_ViewportMiniLabelRightDark; }
+        }
+
+        public GUIStyle miniLabelCenter
+        {
+            get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportMiniLabelCenter : m_ViewportMiniLabelCenterDark; }
+        }
+
+        public GUIStyle label
+        {
+            get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportLabel : m_ViewportLabelDark; }
+        }
+
+        public GUIStyle largeLabel
+        {
+            get { return m_Canvas.BackgroundBrightness < 0.5f ? m_ViewportLargeLabel : m_ViewportLargeLabelDark; }
+        }
+
+        public Color backgroundPanelColor
+        {
+            get { return m_Canvas.BackgroundBrightness < 0.5f ? m_BackgroundPanelColor : m_BackgroundPanelColorDark; }
+        }
+
+        public Color red { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(1, 0, 0, 1) : new Color(0.7f, 0, 0, 1); } }
+        public Color green { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(0, 1, 0, 1) : new Color(0, 0.5f, 0, 1); } }
+        public Color blue { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(0, 0, 1, 1) : new Color(0, 0, 0.5f, 1); } }
+        public Color white { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(1, 1, 1, 1) : new Color(0, 0, 0, 1); } }
+        public Color black { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(0, 0, 0, 1) : new Color(1, 1, 1, 1); } }
+        public Color yellow { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(1.0f, 0.8f, 0.25f) : new Color(0.5f, 0.4f, 0.1f); } }
+        public Color cyan { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(0.25f, 0.8f, 1.0f) : new Color(0.1f, 0.4f, 0.5f); } }
+        public Color fadewhite { get { return m_Canvas.BackgroundBrightness < 0.5f ? new Color(1, 1, 1, 0.25f) : new Color(0, 0, 0, 0.25f); } }
+
+        private GUIStyle m_ViewportMiniLabel;
+        private GUIStyle m_ViewportMiniLabelDark;
+        private GUIStyle m_ViewportMiniLabelRight;
+        private GUIStyle m_ViewportMiniLabelRightDark;
+        private GUIStyle m_ViewportMiniLabelCenter;
+        private GUIStyle m_ViewportMiniLabelCenterDark;
+        private GUIStyle m_ViewportLabel;
+        private GUIStyle m_ViewportLabelDark;
+        private GUIStyle m_ViewportLargeLabel;
+        private GUIStyle m_ViewportLargeLabelDark;
+
+        private VFXToolboxCanvas m_Canvas;
+
+        private Color m_BackgroundPanelColor;
+        private Color m_BackgroundPanelColorDark;
+
+        internal CanvasStyles(VFXToolboxCanvas canvas)
+        {
+            m_Canvas = canvas;
+
+            m_ViewportMiniLabel = new GUIStyle(EditorStyles.miniLabel);
+            m_ViewportMiniLabel.normal.textColor = Color.white;
+            m_ViewportMiniLabelDark = new GUIStyle(EditorStyles.miniLabel);
+            m_ViewportMiniLabelDark.normal.textColor = Color.black;
+
+            m_ViewportMiniLabelRight = new GUIStyle(m_ViewportMiniLabel);
+            m_ViewportMiniLabelRight.alignment = TextAnchor.MiddleRight;
+            m_ViewportMiniLabelRightDark = new GUIStyle(m_ViewportMiniLabelDark);
+            m_ViewportMiniLabelRightDark.alignment = TextAnchor.MiddleRight;
+
+            m_ViewportMiniLabelCenter = new GUIStyle(m_ViewportMiniLabel);
+            m_ViewportMiniLabelCenter.alignment = TextAnchor.MiddleCenter;
+            m_ViewportMiniLabelCenterDark = new GUIStyle(m_ViewportMiniLabelDark);
+            m_ViewportMiniLabelCenterDark.alignment = TextAnchor.MiddleCenter;
+
+            m_ViewportLabel = new GUIStyle(EditorStyles.largeLabel);
+            m_ViewportLabel.normal.textColor = Color.white;
+
+            m_ViewportLabelDark = new GUIStyle(EditorStyles.largeLabel);
+            m_ViewportLabelDark.normal.textColor = Color.black;
+
+            m_ViewportLargeLabel = new GUIStyle(EditorStyles.largeLabel);
+            m_ViewportLargeLabel.fontSize = 24;
+            m_ViewportLargeLabel.normal.textColor = Color.white;
+
+            m_ViewportLargeLabelDark = new GUIStyle(EditorStyles.largeLabel);
+            m_ViewportLargeLabelDark.fontSize = 24;
+            m_ViewportLargeLabelDark.normal.textColor = Color.black;
+
+            m_BackgroundPanelColor = new Color(0.02f, 0.02f, 0.02f, 0.85f);
+            m_BackgroundPanelColorDark = new Color(0.25f, 0.25f, 0.25f, 0.85f);
+
+        }
+
+        public static Texture2D GetBGTexture(float brightness)
+        {
+            Texture2D out_tex = new Texture2D(2, 2) { hideFlags = HideFlags.DontSave };
+            Color[] bgcolors = new Color[4];
+            brightness *= 0.95f;
+            bgcolors[0] = new Color(brightness + 0.05f, brightness + 0.05f, brightness + 0.05f);
+            bgcolors[1] = new Color(brightness, brightness, brightness);
+            bgcolors[2] = new Color(brightness, brightness, brightness);
+            bgcolors[3] = new Color(brightness + 0.05f, brightness + 0.05f, brightness + 0.05f);
+            out_tex.SetPixels(bgcolors);
+            out_tex.wrapMode = TextureWrapMode.Repeat;
+            out_tex.filterMode = FilterMode.Point;
+            out_tex.Apply();
+            return out_tex;
+        }
+
+
+    }
+    #endregion
 }
